@@ -1,0 +1,34 @@
+on:
+  workflow_dispatch: {}
+  push:
+    paths:
+      - '**'
+      - '!**.md'
+
+env:
+  RG_N: rg-azure-bicep-virtual-wan
+  DEPLOYMENT_TEMPLATE: main.bicep
+  AZ_RES_TAGS: "{'project':'bicephub','env':'dev'}"
+
+name: DEV - Deploy Azure Resource
+jobs:
+  deploy_to_dev:
+    runs-on: ubuntu-latest
+    environment: dev
+    steps:
+      # Checkout code
+    - uses: actions/checkout@v2
+
+      # Log into Azure
+    - uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      # Test Azure Resource Deployment
+    - uses: azure/arm-deploy@v1
+      with:
+        scope: resourcegroup
+        resourceGroupName: ${{ env.RG_N }}
+        deploymentMode: Incremental
+        template: ${{ env.DEPLOYMENT_TEMPLATE }}
+        failOnStdErr: true
