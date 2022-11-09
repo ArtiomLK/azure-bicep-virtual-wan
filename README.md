@@ -1,0 +1,1 @@
+# azure-bicep-virtual-wan
