@@ -189,7 +189,7 @@ module vwan 'components/vwan/vwan.bicep' = {
 // VWAN - hub
 resource vwanhubDeploy 'Microsoft.Network/virtualHubs@2021-02-01' = {
   name: vwan_hub_n
-  location: location
+  location: vwan_hub_location
   properties: {
     virtualWan: {
       id: vwan.outputs.vwanId
