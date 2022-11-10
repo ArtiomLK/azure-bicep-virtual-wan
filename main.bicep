@@ -14,7 +14,6 @@ param tags object = {
 // ------------------------------------------------------------------------------------------------
 // VWAN Configuration parameters
 // ------------------------------------------------------------------------------------------------
-// vwan
 param vwan_n string = 'vwan-${project_n}-${env}-${location}'
 
 // vwan - hub
@@ -189,7 +188,7 @@ module vwan 'components/vwan/vwan.bicep' = {
 
 // VWAN - hub
 resource vwanhubDeploy 'Microsoft.Network/virtualHubs@2021-02-01' = {
-  name: 'vwanhub-${vwan_hub_location}'
+  name: vwan_hub_n
   location: location
   properties: {
     virtualWan: {
@@ -212,8 +211,8 @@ module vpng 'components/vwan/vpng.bicep' = if (vpng_enabled) {
 
 // Deploy vNet peerings
 resource VwanHub_to_vnet 'Microsoft.Network/virtualHubs/hubVirtualNetworkConnections@2020-05-01' = {
-  name: 'vwan-to-spoke-1'
   parent: vwanhubDeploy
+  name: 'vwan-to-spoke-1'
   properties: {
     routingConfiguration: {
       associatedRouteTable: {
