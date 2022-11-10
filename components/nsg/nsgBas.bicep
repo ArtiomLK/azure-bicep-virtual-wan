@@ -1,9 +1,10 @@
 param nsgName string
 param tags object
+param location string = resourceGroup().location
 
 resource nsgAgw 'Microsoft.Network/networkSecurityGroups@2021-02-01' = {
   name: nsgName
-  location: resourceGroup().location
+  location: location
   tags: tags
   properties: {
     securityRules: [

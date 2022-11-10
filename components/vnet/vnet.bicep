@@ -3,10 +3,11 @@ param vnet_n string
 param vnet_addr string
 param defaultNsgId string
 param subnets array
+param location string = resourceGroup().location
 
 resource vnetDeployed 'Microsoft.Network/virtualNetworks@2021-02-01' = {
   name: vnet_n
-  location: resourceGroup().location
+  location: location
   tags: tags
   properties: {
     addressSpace: {

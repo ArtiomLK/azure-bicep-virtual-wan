@@ -1,11 +1,13 @@
 
 param tags object
 param pip_n string
+param location string = resourceGroup().location
+
 
 resource bastionPublicIpAddress 'Microsoft.Network/publicIPAddresses@2020-08-01' = {
   name: pip_n
   tags: tags
-  location: resourceGroup().location
+  location: location
   sku: {
     name: 'Standard'
   }

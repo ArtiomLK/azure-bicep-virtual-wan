@@ -103,6 +103,7 @@ module hubCustom 'components/vnet/vnet.bicep' = {
       }
     ]
     defaultNsgId: nsgDefaultDeploy.outputs.id
+    location: location
   }
 }
 
@@ -111,6 +112,7 @@ module nsgDefaultDeploy 'components/nsg/nsgDefault.bicep' = {
   name: 'nsg-default-deployment'
   params: {
     tags: tags
+    location: location
   }
 }
 
@@ -130,6 +132,7 @@ module spoke1vnet 'components/vnet/vnet.bicep' = {
       }
     ]
     defaultNsgId: nsgDefaultDeploy.outputs.id
+    location: location
   }
 }
 
@@ -146,6 +149,7 @@ module spoke2vnet 'components/vnet/vnet.bicep' = {
       }
     ]
     defaultNsgId: nsgDefaultDeploy.outputs.id
+    location: location
   }
 }
 
@@ -166,6 +170,7 @@ module bastionVnet 'components/vnet/vnet.bicep' = {
       }
     ]
     defaultNsgId: nsgDefaultDeploy.outputs.id
+    location: location
   }
 }
 
@@ -174,6 +179,7 @@ module nsgBastionDeploy 'components/nsg/nsgBas.bicep' = {
   params: {
     nsgName: bas_nsg_n
     tags:tags
+    location: location
   }
 }
 
@@ -182,6 +188,7 @@ module pip 'components/pip/pip.bicep' = {
   params: {
     pip_n: bas_pip_n
     tags: tags
+    location: location
   }
 }
 
@@ -191,6 +198,7 @@ module basDeploy 'components/bas/bas.bicep' = {
     bas_n: bas_n
     snet_bas_id: snet_bas_id
     pip_id: pip.outputs.id
+    location: location
   }
   dependsOn: [
     bastionVnet
