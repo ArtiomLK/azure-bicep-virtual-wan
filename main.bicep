@@ -209,8 +209,8 @@ module vpng 'components/vwan/vpng.bicep' = if (vpng_enabled) {
   }
 }
 
-// Deploy vNet peerings
-resource VwanHub_to_vnet 'Microsoft.Network/virtualHubs/hubVirtualNetworkConnections@2020-05-01' = {
+// Deploy vHub peerings
+resource VwanHub_to_spoke1 'Microsoft.Network/virtualHubs/hubVirtualNetworkConnections@2020-05-01' = {
   parent: vwanhubDeploy
   name: 'vwan-to-spoke-1'
   properties: {
@@ -231,6 +231,58 @@ resource VwanHub_to_vnet 'Microsoft.Network/virtualHubs/hubVirtualNetworkConnect
     }
     remoteVirtualNetwork: {
       id: spoke1vnet.outputs.id
+    }
+    enableInternetSecurity: true
+  }
+}
+
+resource VwanHub_to_spoke2 'Microsoft.Network/virtualHubs/hubVirtualNetworkConnections@2020-05-01' = {
+  parent: vwanhubDeploy
+  name: 'vwan-to-spoke-2'
+  properties: {
+    routingConfiguration: {
+      associatedRouteTable: {
+        id: resourceId('Microsoft.Network/virtualHubs/hubRouteTables', vwan_hub_n, 'defaultRouteTable')
+      }
+      propagatedRouteTables: {
+        labels: [
+          'default'
+        ]
+        ids: [
+          {
+            id: resourceId('Microsoft.Network/virtualHubs/hubRouteTables', vwan_hub_n, 'defaultRouteTable')
+          }
+        ]
+      }
+    }
+    remoteVirtualNetwork: {
+      id: spoke2vnet.outputs.id
+    }
+    enableInternetSecurity: true
+  }
+}
+
+resource VwanHub_to_hub_custom 'Microsoft.Network/virtualHubs/hubVirtualNetworkConnections@2020-05-01' = {
+  parent: vwanhubDeploy
+  name: 'vwan-to-hub-custom'
+  properties: {
+    routingConfiguration: {
+      associatedRouteTable: {
+        id: resourceId('Microsoft.Network/virtualHubs/hubRouteTables', vwan_hub_n, 'defaultRouteTable')
+      }
+      propagatedRouteTables: {
+        labels: [
+          'default'
+        ]
+        ids: [
+          {
+            id: resourceId('Microsoft.Network/virtualHubs/hubRouteTables', vwan_hub_n, 'defaultRouteTable')
+          }
+        ]
+      }
+    }
+    remoteVirtualNetwork: {
+      id: hubCustom.outputs.id
     }
     enableInternetSecurity: true
   }
