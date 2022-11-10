@@ -4,7 +4,7 @@ targetScope = 'resourceGroup'
 // ------------------------------------------------------------------------------------------------
 param location string = resourceGroup().location
 
-param project_n string = 'topology'
+param project_n string = 'net'
 param env string = 'prod'
 param tags object = {
   project : project_n
@@ -44,7 +44,8 @@ param vnet_spoke_2_n string = 'vnet-spoke-1-${project_n}-${env}-${location}'
 param vnet_spoke_2_prefix string = '50.50.60.0/23'
 param snet_spoke_2_prefix string = '50.50.60.0/24'
 
-// vnet-bastion
+// bastion
+param bas_enabled bool = true
 param bas_n string = 'bas-${project_n}-${env}-${location}'
 param bas_pip_n string = 'bas-pip-${project_n}-${env}-${location}'
 param bas_vnet_n string = 'vnet-bastion-${project_n}-${env}-${location}'
@@ -125,7 +126,7 @@ module spoke2vnet 'components/vnet/vnet.bicep' = {
 // ------------------------------------------------------------------------------------------------
 // Deploy Azure Bastion
 // ------------------------------------------------------------------------------------------------
-module bastionVnet 'components/vnet/vnet.bicep' = {
+module bastionVnet 'components/vnet/vnet.bicep' = if (bas_enabled) {
   name: 'mainVnetDeployment'
   params: {
     tags: tags
@@ -143,7 +144,7 @@ module bastionVnet 'components/vnet/vnet.bicep' = {
   }
 }
 
-module nsgBastionDeploy 'components/nsg/nsgBas.bicep' = {
+module nsgBastionDeploy 'components/nsg/nsgBas.bicep' = if (bas_enabled) {
   name: 'nsg-bastion'
   params: {
     nsgName: bas_nsg_n
@@ -152,7 +153,7 @@ module nsgBastionDeploy 'components/nsg/nsgBas.bicep' = {
   }
 }
 
-module pip 'components/pip/pip.bicep' = {
+module pip 'components/pip/pip.bicep' = if (bas_enabled) {
   name: 'pipDeployment'
   params: {
     pip_n: bas_pip_n
@@ -161,7 +162,7 @@ module pip 'components/pip/pip.bicep' = {
   }
 }
 
-module basDeploy 'components/bas/bas.bicep' = {
+module basDeploy 'components/bas/bas.bicep' = if (bas_enabled) {
   name: 'basDeploymet'
   params: {
     bas_n: bas_n
