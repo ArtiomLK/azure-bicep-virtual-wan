@@ -40,7 +40,7 @@ param vnet_spoke_1_prefix string = '50.50.50.0/23'
 param snet_spoke_1_prefix string = '50.50.50.0/24'
 
 // vnet-spoke-2
-param vnet_spoke_2_n string = 'vnet-spoke-1-${project_n}-${env}-${location}'
+param vnet_spoke_2_n string = 'vnet-spoke-2-${project_n}-${env}-${location}'
 param vnet_spoke_2_prefix string = '50.50.60.0/23'
 param snet_spoke_2_prefix string = '50.50.60.0/24'
 
