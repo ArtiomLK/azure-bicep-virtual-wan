@@ -112,7 +112,7 @@ module spoke2vnet 'components/vnet/vnet.bicep' = {
     vnet_addr: vnet_spoke_2_prefix
     subnets: [
       {
-        name: 'snet-spoke-1'
+        name: 'snet-spoke-2'
         subnetPrefix: snet_spoke_2_prefix
         nsgId: nsgDefaultDeploy.outputs.id
       }
