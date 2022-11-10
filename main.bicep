@@ -55,39 +55,6 @@ var bas_nsg_n = 'nsg-bas-${project_n}-${env}-${location}'
 var snet_bas_id = '${subscription().id}/resourceGroups/${ resourceGroup().name}/providers/Microsoft.Network/virtualNetworks/${bas_vnet_n}/subnets/AzureBastionSubnet'
 
 // ------------------------------------------------------------------------------------------------
-// VWAN
-// ------------------------------------------------------------------------------------------------
-module vwan 'components/vwan/vwan.bicep' = {
-  name: 'vwan'
-  params: {
-    vwan_n: vwan_n
-    location: location
-    tags: tags
-  }
-}
-
-// VWAN - hub
-module vwanhubDeploy 'components/vwan/vhub.bicep' = {
-  name: 'vwanhub-${vwan_hub_location}'
-  params: {
-    vwan_hub_n: vwan_hub_n
-    location: vwan_hub_location
-    vwan_hub_addr_prefix: vwan_hub_addr_prefix
-    vwanId: vwan.outputs.vwanId
-  }
-}
-
-// VWAN - gw
-module vpng 'components/vwan/vpng.bicep' = if (vpng_enabled) {
-  name: 'vpng'
-  params: {
-    vpng_n: vpng_n
-    vpng_location: vpng_location
-    vwanhubId: vwanhubDeploy.outputs.vwanhubId
-  }
-}
-
-// ------------------------------------------------------------------------------------------------
 // Deploy Custom Hub Vnet
 // ------------------------------------------------------------------------------------------------
 module hubCustom 'components/vnet/vnet.bicep' = {
@@ -157,27 +124,6 @@ module spoke2vnet 'components/vnet/vnet.bicep' = {
 }
 
 // ------------------------------------------------------------------------------------------------
-// Deploy vNet peerings
-// ------------------------------------------------------------------------------------------------
-module hubToSpoke1Peering 'components/vnet/peer.bicep' = {
-  name: 'hub-To-Spoke1-PeeringDeployment'
-  params: {
-    vnet_from_n: vnet_hub_n
-    vnet_to_id: spoke1vnet.outputs.id
-    peeringName: 'peer-from-${vnet_hub_n}-to-${vnet_spoke_1_n}'
-  }
-}
-
-module spoke1ToHubPeering 'components/vnet/peer.bicep' = {
-  name: 'spoke1-To-Hub-PeeringDeployment'
-  params: {
-    vnet_from_n: vnet_spoke_1_n
-    vnet_to_id: spoke1vnet.outputs.id
-    peeringName: 'peer-from-${vnet_spoke_1_n}-to-${vnet_hub_n}'
-  }
-}
-
-// ------------------------------------------------------------------------------------------------
 // Deploy Azure Bastion
 // ------------------------------------------------------------------------------------------------
 module bastionVnet 'components/vnet/vnet.bicep' = {
@@ -227,6 +173,68 @@ module basDeploy 'components/bas/bas.bicep' = {
   dependsOn: [
     bastionVnet
   ]
+}
+
+// ------------------------------------------------------------------------------------------------
+// VWAN
+// ------------------------------------------------------------------------------------------------
+module vwan 'components/vwan/vwan.bicep' = {
+  name: 'vwan'
+  params: {
+    vwan_n: vwan_n
+    location: location
+    tags: tags
+  }
+}
+
+// VWAN - hub
+resource vwanhubDeploy 'Microsoft.Network/virtualHubs@2021-02-01' = {
+  name: 'vwanhub-${vwan_hub_location}'
+  location: location
+  properties: {
+    virtualWan: {
+      id: vwan.outputs.vwanId
+    }
+    addressPrefix: vwan_hub_addr_prefix
+  }
+  tags: tags
+}
+
+// VWAN - gw
+module vpng 'components/vwan/vpng.bicep' = if (vpng_enabled) {
+  name: 'vpng'
+  params: {
+    vpng_n: vpng_n
+    vpng_location: vpng_location
+    vwanhubId: vwanhubDeploy.id
+  }
+}
+
+// Deploy vNet peerings
+resource VwanHub_to_vnet 'Microsoft.Network/virtualHubs/hubVirtualNetworkConnections@2020-05-01' = {
+  name: 'vwan-to-spoke-1'
+  parent: vwanhubDeploy
+  properties: {
+    routingConfiguration: {
+      associatedRouteTable: {
+        id: resourceId('Microsoft.Network/virtualHubs/hubRouteTables', vwan_hub_n, 'defaultRouteTable')
+      }
+      propagatedRouteTables: {
+        labels: [
+          'default'
+        ]
+        ids: [
+          {
+            id: resourceId('Microsoft.Network/virtualHubs/hubRouteTables', vwan_hub_n, 'defaultRouteTable')
+          }
+        ]
+      }
+    }
+    remoteVirtualNetwork: {
+      id: spoke1vnet.outputs.id
+    }
+    enableInternetSecurity: true
+  }
 }
 
 output id string = vwan.outputs.vwanId
