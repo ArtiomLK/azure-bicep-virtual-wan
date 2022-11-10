@@ -157,6 +157,27 @@ module spoke2vnet 'components/vnet/vnet.bicep' = {
 }
 
 // ------------------------------------------------------------------------------------------------
+// Deploy vNet peerings
+// ------------------------------------------------------------------------------------------------
+module hubToSpoke1Peering 'components/vnet/peer.bicep' = {
+  name: 'hub-To-Spoke1-PeeringDeployment'
+  params: {
+    vnet_from_n: vnet_hub_n
+    vnet_to_id: spoke1vnet.outputs.id
+    peeringName: 'peer-from-${vnet_hub_n}-to-${vnet_spoke_1_n}'
+  }
+}
+
+module spoke1ToHubPeering 'components/vnet/peer.bicep' = {
+  name: 'spoke1-To-Hub-PeeringDeployment'
+  params: {
+    vnet_from_n: vnet_spoke_1_n
+    vnet_to_id: spoke1vnet.outputs.id
+    peeringName: 'peer-from-${vnet_spoke_1_n}-to-${vnet_hub_n}'
+  }
+}
+
+// ------------------------------------------------------------------------------------------------
 // Deploy Azure Bastion
 // ------------------------------------------------------------------------------------------------
 module bastionVnet 'components/vnet/vnet.bicep' = {
