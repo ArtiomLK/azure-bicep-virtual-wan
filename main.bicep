@@ -100,6 +100,7 @@ module hubCustom 'components/vnet/vnet.bicep' = {
       {
         name: 'snet-hub-custom'
         subnetPrefix: snet_hub_prefix
+        nsgId: nsgDefaultDeploy.outputs.id
       }
     ]
     defaultNsgId: nsgDefaultDeploy.outputs.id
