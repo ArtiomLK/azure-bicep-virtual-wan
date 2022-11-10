@@ -129,6 +129,7 @@ module spoke1vnet 'components/vnet/vnet.bicep' = {
       {
         name: 'snet-spoke-1'
         subnetPrefix: snet_spoke_1_prefix
+        nsgId: nsgDefaultDeploy.outputs.id
       }
     ]
     defaultNsgId: nsgDefaultDeploy.outputs.id
@@ -146,6 +147,7 @@ module spoke2vnet 'components/vnet/vnet.bicep' = {
       {
         name: 'snet-spoke-1'
         subnetPrefix: snet_spoke_2_prefix
+        nsgId: nsgDefaultDeploy.outputs.id
       }
     ]
     defaultNsgId: nsgDefaultDeploy.outputs.id
