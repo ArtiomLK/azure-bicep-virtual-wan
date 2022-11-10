@@ -211,6 +211,33 @@ module vpng 'components/vwan/vpng.bicep' = if (vpng_enabled) {
 }
 
 // Deploy vHub peerings
+resource VwanHub_to_hub_custom 'Microsoft.Network/virtualHubs/hubVirtualNetworkConnections@2020-05-01' = {
+  parent: vwanhubDeploy
+  name: 'vwan-to-hub-custom'
+  properties: {
+    routingConfiguration: {
+      associatedRouteTable: {
+        id: resourceId('Microsoft.Network/virtualHubs/hubRouteTables', vwan_hub_n, 'defaultRouteTable')
+      }
+      propagatedRouteTables: {
+        labels: [
+          'default'
+        ]
+        ids: [
+          {
+            id: resourceId('Microsoft.Network/virtualHubs/hubRouteTables', vwan_hub_n, 'defaultRouteTable')
+          }
+        ]
+      }
+    }
+    remoteVirtualNetwork: {
+      id: hubCustom.outputs.id
+    }
+    enableInternetSecurity: true
+  }
+}
+
+
 resource VwanHub_to_spoke1 'Microsoft.Network/virtualHubs/hubVirtualNetworkConnections@2020-05-01' = {
   parent: vwanhubDeploy
   name: 'vwan-to-spoke-1'
@@ -235,6 +262,9 @@ resource VwanHub_to_spoke1 'Microsoft.Network/virtualHubs/hubVirtualNetworkConne
     }
     enableInternetSecurity: true
   }
+  dependsOn: [
+    VwanHub_to_hub_custom
+  ]
 }
 
 resource VwanHub_to_spoke2 'Microsoft.Network/virtualHubs/hubVirtualNetworkConnections@2020-05-01' = {
@@ -261,32 +291,12 @@ resource VwanHub_to_spoke2 'Microsoft.Network/virtualHubs/hubVirtualNetworkConne
     }
     enableInternetSecurity: true
   }
+  dependsOn: [
+    VwanHub_to_hub_custom
+    VwanHub_to_spoke1
+  ]
 }
 
-resource VwanHub_to_hub_custom 'Microsoft.Network/virtualHubs/hubVirtualNetworkConnections@2020-05-01' = {
-  parent: vwanhubDeploy
-  name: 'vwan-to-hub-custom'
-  properties: {
-    routingConfiguration: {
-      associatedRouteTable: {
-        id: resourceId('Microsoft.Network/virtualHubs/hubRouteTables', vwan_hub_n, 'defaultRouteTable')
-      }
-      propagatedRouteTables: {
-        labels: [
-          'default'
-        ]
-        ids: [
-          {
-            id: resourceId('Microsoft.Network/virtualHubs/hubRouteTables', vwan_hub_n, 'defaultRouteTable')
-          }
-        ]
-      }
-    }
-    remoteVirtualNetwork: {
-      id: hubCustom.outputs.id
-    }
-    enableInternetSecurity: true
-  }
-}
+
 
 output id string = vwan.outputs.vwanId
