@@ -4,7 +4,7 @@ targetScope = 'resourceGroup'
 // ------------------------------------------------------------------------------------------------
 param location string = resourceGroup().location
 
-param project_n string = 'net'
+param project_n string = 'topology'
 param env string = 'prod'
 param tags object = {
   project : project_n
@@ -22,7 +22,7 @@ param vwan_hub_location string = location
 param vwan_hub_addr_prefix string = '10.100.0.0/23'
 
 // vwan - vpng
-param vpng_enabled bool = true
+param vpng_enabled bool = false
 param vpng_n string = 'vwangw-${project_n}-${env}-${location}'
 param vpng_location string = location
 
@@ -45,7 +45,7 @@ param vnet_spoke_2_prefix string = '50.50.60.0/23'
 param snet_spoke_2_prefix string = '50.50.60.0/24'
 
 // bastion
-param bas_enabled bool = true
+param bas_enabled bool = false
 param bas_n string = 'bas-${project_n}-${env}-${location}'
 param bas_pip_n string = 'bas-pip-${project_n}-${env}-${location}'
 param bas_vnet_n string = 'vnet-bastion-${project_n}-${env}-${location}'
