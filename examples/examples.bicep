@@ -252,7 +252,7 @@ module bastionVnet '../components/vnet/vnet.bicep' = [for i in range(0, length(v
       {
         name: 'AzureBastionSubnet'
         subnetPrefix: bas_enabled[i] ? bas_snet_prefixes[i] : 'not-enabled'
-        nsgId: nsgBastion[i].outputs.id
+        nsgId: bas_enabled[i] ? nsgBastion[i].outputs.id : 'not-enabled'
       }
     ]
     defaultNsgId: nsgDefault[i].outputs.id
@@ -277,7 +277,7 @@ module pipBastion '../components/pip/pip.bicep' = [for i in range(0, length(vhub
   params: {
     pip_n: bas_enabled[i] ? bas_pip_names[i] : 'not-enabled'
     tags: tags
-    location: bas_enabled[i] ? vhub_locations[i] : 'not-enabled'
+    location: vhub_locations[i]
   }
 }]
 
@@ -287,7 +287,7 @@ module bas '../components/bas/bas.bicep' = [for i in range(0, length(vhub_locati
     bas_n: bas_enabled[i] ? bas_names[i] : 'not-enabled'
     snet_bas_id: bas_enabled[i] ? snet_bas_ids[i] : 'not-enabled'
     pip_id: bas_enabled[i] ? pipBastion[i].outputs.id : 'not-enabled'
-    location: bas_enabled[i] ? vhub_locations[i] : 'not-enabled'
+    location: vhub_locations[i]
   }
   dependsOn: [
     bastionVnet
