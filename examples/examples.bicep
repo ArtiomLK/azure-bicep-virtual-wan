@@ -109,6 +109,9 @@ module vnetNvaHub '../components/vnet/vnet.bicep' = [for i in range(0, length(vn
     location: vhub_locations[i]
     tags: tags
   }
+  dependsOn: [
+    nsgDefault
+  ]
 }]
 
 // NSG - Default
@@ -121,43 +124,46 @@ module nsgDefault '../components/nsg/nsgDefault.bicep' = {
 }
 
 // module hubCustom '../components/vnet/vnet.bicep' = {
-//   name: 'hubCustomDeployment'
-//   params: {
-//     tags: tags
+  //   name: 'hubCustomDeployment'
+  //   params: {
+    //     tags: tags
 //     vnet_n: vnet_hub_n
 //     vnet_addr: vnet_hub_prefix
 //     subnets: [
-//       {
-//         name: 'snet-hub-custom'
-//         subnetPrefix: snet_hub_prefix
-//         nsgId: nsgDefaultDeploy.outputs.id
-//       }
-//     ]
-//     defaultNsgId: nsgDefaultDeploy.outputs.id
-//     location: location
-//   }
-// }
+  //       {
+    //         name: 'snet-hub-custom'
+    //         subnetPrefix: snet_hub_prefix
+    //         nsgId: nsgDefaultDeploy.outputs.id
+    //       }
+    //     ]
+    //     defaultNsgId: nsgDefaultDeploy.outputs.id
+    //     location: location
+    //   }
+    // }
 
 
-// ------------------------------------------------------------------------------------------------
-// VNET - Deploy Spokes Vnets
-// ------------------------------------------------------------------------------------------------
-module vnetSpoke1 '../components/vnet/vnet.bicep' = [for i in range(0, length(vnet_spoke_1_names)) :{
-  name: vnet_spoke_1_names[i]
-  params: {
-    vnet_n: vnet_spoke_1_names[i]
-    vnet_addr: vnet_spoke_1_prefixes[i]
-    subnets: [
-      {
-        name: snet_spoke_1_names[i]
-        subnetPrefix: snet_spoke_1_prefixes[i]
-        nsgId: nsgDefault.outputs.id
-      }
+    // ------------------------------------------------------------------------------------------------
+    // VNET - Deploy Spokes Vnets
+    // ------------------------------------------------------------------------------------------------
+    module vnetSpoke1 '../components/vnet/vnet.bicep' = [for i in range(0, length(vnet_spoke_1_names)) :{
+      name: vnet_spoke_1_names[i]
+      params: {
+        vnet_n: vnet_spoke_1_names[i]
+        vnet_addr: vnet_spoke_1_prefixes[i]
+        subnets: [
+          {
+            name: snet_spoke_1_names[i]
+            subnetPrefix: snet_spoke_1_prefixes[i]
+            nsgId: nsgDefault.outputs.id
+          }
     ]
     defaultNsgId: nsgDefault.outputs.id
     location: vhub_locations[i]
     tags: tags
   }
+  dependsOn: [
+    nsgDefault
+  ]
 }]
 
 module vnetSpokeN '../components/vnet/vnet.bicep' = [for i in range(0, length(vnet_spoke_n_names)) :{
@@ -176,6 +182,9 @@ module vnetSpokeN '../components/vnet/vnet.bicep' = [for i in range(0, length(vn
     location: vhub_locations[i]
     tags: tags
   }
+  dependsOn: [
+    nsgDefault
+  ]
 }]
 
 // module spoke1vnet '../components/vnet/vnet.bicep' = {
