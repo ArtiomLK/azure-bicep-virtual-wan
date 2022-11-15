@@ -32,6 +32,7 @@ jobs:
         deploymentMode: Incremental
         template: ${{ env.DEPLOYMENT_TEMPLATE }}
         failOnStdErr: true
+        additionalArguments: --no-wait
 
       # Log into Azure
     - uses: azure/login@v1
@@ -45,3 +46,4 @@ jobs:
         deploymentMode: Incremental
         template: ${{ env.DEPLOYMENT_TEMPLATE }}
         failOnStdErr: true
+        additionalArguments: --no-wait
