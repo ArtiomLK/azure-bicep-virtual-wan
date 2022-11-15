@@ -39,7 +39,7 @@ var vpng_names = [for l in vhub_locations: 'vpng-${tags.project}-${tags.env}-${l
 // var snet_hub_prefixes = '50.50.40.0/24'
 
 // nsg
-var nsg_default_names = [for l in  vhub_locations : 'nsg-default-${l}']
+// var nsg_default_names = [for l in  vhub_locations : 'nsg-default-${l}']
 
 // custom-hub
 var vnet_nva_hub_names = [for l in vhub_locations: 'vnet-nva-hub-${tags.project}-${tags.env}-${l}']
