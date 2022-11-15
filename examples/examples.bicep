@@ -125,6 +125,7 @@ module nsgDefault '../components/nsg/nsgDefault.bicep' = [for l in vhub_location
   params: {
     tags: tags
     location: l
+    name: 'nsg-default-${l}'
   }
 }]
 

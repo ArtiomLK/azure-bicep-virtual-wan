@@ -1,8 +1,9 @@
 param tags object
 param location string = resourceGroup().location
+param name string
 
 resource nsgDefault 'Microsoft.Network/networkSecurityGroups@2021-02-01' = {
-  name: 'nsg-default'
+  name: empty(name) ? 'nsg-default' : name
   location: location
   properties: {}
   tags: tags
