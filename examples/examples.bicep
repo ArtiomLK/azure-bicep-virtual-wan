@@ -243,7 +243,7 @@ module vnetSpokeN '../components/vnet/vnet.bicep' = [for i in range(0, length(vn
 // Bastion - Deploy Azure Bastion
 // ------------------------------------------------------------------------------------------------
 module bastionVnet '../components/vnet/vnet.bicep' = [for i in range(0, length(vhub_locations)) : if (bas_enabled[i]) {
-  name: bas_enabled[i] ? bas_vnet_names[i] : 'not-enabled'
+  name: bas_vnet_names[i]
   params: {
     tags: tags
     vnet_n: bas_enabled[i] ? bas_vnet_names[i] : 'not-enabled'
@@ -264,7 +264,7 @@ module bastionVnet '../components/vnet/vnet.bicep' = [for i in range(0, length(v
 }]
 
 module nsgBastion '../components/nsg/nsgBas.bicep'  = [for i in range(0, length(vhub_locations)) : if (bas_enabled[i]) {
-  name: bas_enabled[i] ? 'nsg-bas-${vhub_locations[i]}' : 'not-enabled'
+  name: 'nsg-bas-${vhub_locations[i]}'
   params: {
     nsgName: bas_enabled[i] ? 'nsg-bas-${vhub_locations[i]}' : 'not-enabled'
     tags:tags
@@ -273,7 +273,7 @@ module nsgBastion '../components/nsg/nsgBas.bicep'  = [for i in range(0, length(
 }]
 
 module pipBastion '../components/pip/pip.bicep' = [for i in range(0, length(vhub_locations)) : if (bas_enabled[i]) {
-  name: bas_enabled[i] ? bas_pip_names[i] : 'not-enabled'
+  name: bas_pip_names[i]
   params: {
     pip_n: bas_enabled[i] ? bas_pip_names[i] : 'not-enabled'
     tags: tags
@@ -282,7 +282,7 @@ module pipBastion '../components/pip/pip.bicep' = [for i in range(0, length(vhub
 }]
 
 module bas '../components/bas/bas.bicep' = [for i in range(0, length(vhub_locations)) : if (bas_enabled[i]) {
-  name: bas_enabled[i] ? bas_names[i] : 'not-enabled'
+  name: bas_names[i]
   params: {
     bas_n: bas_enabled[i] ? bas_names[i] : 'not-enabled'
     snet_bas_id: bas_enabled[i] ? snet_bas_ids[i] : 'not-enabled'
