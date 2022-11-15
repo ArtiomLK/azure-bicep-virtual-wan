@@ -295,8 +295,8 @@ module vnetSpokeN '../components/vnet/vnet.bicep' = [for i in range(0, length(vn
 // VWAN Deployment Examples
 // ------------------------------------------------------------------------------------------------
 
-module vwan '../main.bicep' = {
-  name: 'vwan'
+module vwanDeployment '../main.bicep' = {
+  name: 'vwanDeployment'
   params: {
     location: location
 
