@@ -23,7 +23,7 @@ var vhub_addr_prefixes = [for i in range(1, length(vhub_locations)): '${i*50}.0.
 
 // vwan - vpng
 // var vpng_enabled = false
-var vpng_enabled = [false, false, false, false]
+var vpng_enabled = [true, true, true, true]
 var vpng_names = [for l in vhub_locations: 'vpng-${tags.project}-${tags.env}-${l}']
 
 // ------------------------------------------------------------------------------------------------
