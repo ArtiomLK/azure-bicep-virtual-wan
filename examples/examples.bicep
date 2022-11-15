@@ -303,4 +303,3 @@ module vwan '../main.bicep' = {
     vhub_net_connections: vhub_net_connections
   }
 }
-
