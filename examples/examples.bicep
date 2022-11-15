@@ -85,7 +85,7 @@ var vhub_net_connections = concat(vhub_net_connections_nva_hub, vhub_net_connect
 // ------------------------------------------------------------------------------------------------
 // Bastion Configuration parameters
 // ------------------------------------------------------------------------------------------------
-var bas_enabled = [false, false, false, false]
+var bas_enabled = [true, true, true, true]
 // var bas_n = 'bas-${tags.project}-${tags.env}-${location}'
 var bas_names = [for l in vhub_locations: 'bas-${tags.project}-${tags.env}-${l}']
 var bas_pip_names = [for l in vhub_locations: 'bas-pip-${tags.project}-${tags.env}-${l}']
