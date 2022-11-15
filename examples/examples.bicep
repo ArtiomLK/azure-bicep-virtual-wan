@@ -85,25 +85,25 @@ var vhub_net_connections = concat(vhub_net_connections_nva_hub, vhub_net_connect
 // ------------------------------------------------------------------------------------------------
 // Bastion Configuration parameters
 // ------------------------------------------------------------------------------------------------
-var bas_enabled = [false, false, false, false]
-// var bas_n = 'bas-${tags.project}-${tags.env}-${location}'
-var bas_names = [for l in vhub_locations: 'bas-${tags.project}-${tags.env}-${l}']
-var bas_pip_names = [for l in vhub_locations: 'bas-pip-${tags.project}-${tags.env}-${l}']
-// var bas_pip_n = 'bas-pip-${tags.project}-${tags.env}-${location}'
-// var bas_vnet_n = 'vnet-bastion-${tags.project}-${tags.env}-${location}'
-var bas_vnet_names = [for l in vhub_locations: 'vnet-bastion-${tags.project}-${tags.env}-${l}']
+// var bas_enabled = [false, false, false, false]
+// // var bas_n = 'bas-${tags.project}-${tags.env}-${location}'
+// var bas_names = [for l in vhub_locations: 'bas-${tags.project}-${tags.env}-${l}']
+// var bas_pip_names = [for l in vhub_locations: 'bas-pip-${tags.project}-${tags.env}-${l}']
+// // var bas_pip_n = 'bas-pip-${tags.project}-${tags.env}-${location}'
+// // var bas_vnet_n = 'vnet-bastion-${tags.project}-${tags.env}-${location}'
+// var bas_vnet_names = [for l in vhub_locations: 'vnet-bastion-${tags.project}-${tags.env}-${l}']
 
-// var bas_vnet_prefix = '50.50.70.0/24'
-var bas_vnet_prefixes = [for i in range(1, length(vhub_locations)): '${i*50}.0.2.0/24']
-// var vnet_nva_hub_prefixes = [for i in range(1, length(vhub_locations)): '${i*50}.0.1.0/24']
-// var bas_snet_prefix = '50.50.70.0/24'
-var bas_snet_prefixes = [for i in range(1, length(vhub_locations)): '${i*50}.0.2.0/26']
+// // var bas_vnet_prefix = '50.50.70.0/24'
+// var bas_vnet_prefixes = [for i in range(1, length(vhub_locations)): '${i*50}.0.2.0/24']
+// // var vnet_nva_hub_prefixes = [for i in range(1, length(vhub_locations)): '${i*50}.0.1.0/24']
+// // var bas_snet_prefix = '50.50.70.0/24'
+// var bas_snet_prefixes = [for i in range(1, length(vhub_locations)): '${i*50}.0.2.0/26']
 
-// var bas_nsg_n = 'nsg-bas-${tags.project}-${tags.env}-${location}'
-// var bas_nsg_names = [for l in vhub_locations: 'nsg-bas-${tags.project}-${tags.env}-${l}']
+// // var bas_nsg_n = 'nsg-bas-${tags.project}-${tags.env}-${location}'
+// // var bas_nsg_names = [for l in vhub_locations: 'nsg-bas-${tags.project}-${tags.env}-${l}']
 
-// var snet_bas_id = '${subscription().id}/resourceGroups/${ resourceGroup().name}/providers/Microsoft.Network/virtualNetworks/${bas_vnet_n}/subnets/AzureBastionSubnet'
-var snet_bas_ids = [for bas_vnet_n in bas_vnet_names: '${subscription().id}/resourceGroups/${ resourceGroup().name}/providers/Microsoft.Network/virtualNetworks/${bas_vnet_n}/subnets/AzureBastionSubnet']
+// // var snet_bas_id = '${subscription().id}/resourceGroups/${ resourceGroup().name}/providers/Microsoft.Network/virtualNetworks/${bas_vnet_n}/subnets/AzureBastionSubnet'
+// var snet_bas_ids = [for bas_vnet_n in bas_vnet_names: '${subscription().id}/resourceGroups/${ resourceGroup().name}/providers/Microsoft.Network/virtualNetworks/${bas_vnet_n}/subnets/AzureBastionSubnet']
 
 // ------------------------------------------------------------------------------------------------
 // VNET - Deploy Custom Hub Vnet for third party NVA
@@ -242,54 +242,54 @@ module vnetSpokeN '../components/vnet/vnet.bicep' = [for i in range(0, length(vn
 // ------------------------------------------------------------------------------------------------
 // Bastion - Deploy Azure Bastion
 // ------------------------------------------------------------------------------------------------
-module bastionVnet '../components/vnet/vnet.bicep' = [for i in range(0, length(vhub_locations)) : if (bas_enabled[i]) {
-  name: bas_names[i]
-  params: {
-    tags: tags
-    vnet_n: bas_vnet_names[i]
-    vnet_addr: bas_vnet_prefixes[i]
-    subnets: [
-      {
-        name: 'AzureBastionSubnet'
-        subnetPrefix: bas_snet_prefixes[i]
-        nsgId: nsgBastion[i].outputs.id
-      }
-    ]
-    defaultNsgId: nsgDefault[i].outputs.id
-    location: vhub_locations[i]
-  }
-}]
+// module bastionVnet '../components/vnet/vnet.bicep' = [for i in range(0, length(vhub_locations)) : if (bas_enabled[i]) {
+//   name: bas_names[i]
+//   params: {
+//     tags: tags
+//     vnet_n: bas_vnet_names[i]
+//     vnet_addr: bas_vnet_prefixes[i]
+//     subnets: [
+//       {
+//         name: 'AzureBastionSubnet'
+//         subnetPrefix: bas_snet_prefixes[i]
+//         nsgId: nsgBastion[i].outputs.id
+//       }
+//     ]
+//     defaultNsgId: nsgDefault[i].outputs.id
+//     location: vhub_locations[i]
+//   }
+// }]
 
-module nsgBastion '../components/nsg/nsgBas.bicep'  = [for i in range(0, length(vhub_locations)) : if (bas_enabled[i]) {
-  name: 'nsg-bastion-${vhub_locations[i]}'
-  params: {
-    nsgName: 'nsg-bastion-${vhub_locations[i]}'
-    tags:tags
-    location: vhub_locations[i]
-  }
-}]
+// module nsgBastion '../components/nsg/nsgBas.bicep'  = [for i in range(0, length(vhub_locations)) : if (bas_enabled[i]) {
+//   name: 'nsg-bastion-${vhub_locations[i]}'
+//   params: {
+//     nsgName: 'nsg-bastion-${vhub_locations[i]}'
+//     tags:tags
+//     location: vhub_locations[i]
+//   }
+// }]
 
-module pip '../components/pip/pip.bicep' = [for i in range(0, length(vhub_locations)) : if (bas_enabled[i]) {
-  name: bas_pip_names[i]
-  params: {
-    pip_n: bas_pip_names[i]
-    tags: tags
-    location: vhub_locations[i]
-  }
-}]
+// module pip '../components/pip/pip.bicep' = [for i in range(0, length(vhub_locations)) : if (bas_enabled[i]) {
+//   name: bas_pip_names[i]
+//   params: {
+//     pip_n: bas_pip_names[i]
+//     tags: tags
+//     location: vhub_locations[i]
+//   }
+// }]
 
-module bas '../components/bas/bas.bicep' = [for i in range(0, length(vhub_locations)) : if (bas_enabled[i]) {
-  name: bas_names[i]
-  params: {
-    bas_n: bas_names[i]
-    snet_bas_id: snet_bas_ids[i]
-    pip_id: pip[i].outputs.id
-    location: vhub_locations[i]
-  }
-  dependsOn: [
-    bastionVnet
-  ]
-}]
+// module bas '../components/bas/bas.bicep' = [for i in range(0, length(vhub_locations)) : if (bas_enabled[i]) {
+//   name: bas_names[i]
+//   params: {
+//     bas_n: bas_names[i]
+//     snet_bas_id: snet_bas_ids[i]
+//     pip_id: pip[i].outputs.id
+//     location: vhub_locations[i]
+//   }
+//   dependsOn: [
+//     bastionVnet
+//   ]
+// }]
 
 // ------------------------------------------------------------------------------------------------
 // VWAN Deployment Examples
