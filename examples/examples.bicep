@@ -258,6 +258,9 @@ module bastionVnet '../components/vnet/vnet.bicep' = [for i in range(0, length(v
     defaultNsgId: nsgDefault[i].outputs.id
     location: vhub_locations[i]
   }
+  dependsOn: [
+    nsgBastion
+  ]
 }]
 
 module nsgBastion '../components/nsg/nsgBas.bicep'  = [for i in range(0, length(vhub_locations)) : if (bas_enabled[i]) {
@@ -269,7 +272,7 @@ module nsgBastion '../components/nsg/nsgBas.bicep'  = [for i in range(0, length(
   }
 }]
 
-module pip '../components/pip/pip.bicep' = [for i in range(0, length(vhub_locations)) : if (bas_enabled[i]) {
+module pipBastion '../components/pip/pip.bicep' = [for i in range(0, length(vhub_locations)) : if (bas_enabled[i]) {
   name: bas_pip_names[i]
   params: {
     pip_n: bas_pip_names[i]
@@ -283,11 +286,12 @@ module bas '../components/bas/bas.bicep' = [for i in range(0, length(vhub_locati
   params: {
     bas_n: bas_names[i]
     snet_bas_id: snet_bas_ids[i]
-    pip_id: pip[i].outputs.id
+    pip_id: pipBastion[i].outputs.id
     location: vhub_locations[i]
   }
   dependsOn: [
     bastionVnet
+    pipBastion
   ]
 }]
 
