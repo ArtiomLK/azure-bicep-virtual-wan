@@ -243,7 +243,7 @@ module vnetSpokeN '../components/vnet/vnet.bicep' = [for i in range(0, length(vn
 // Bastion - Deploy Azure Bastion
 // ------------------------------------------------------------------------------------------------
 module bastionVnet '../components/vnet/vnet.bicep' = [for i in range(0, length(vhub_locations)) : if (bas_enabled[i]) {
-  name: bas_names[i]
+  name: bas_vnet_names[i]
   params: {
     tags: tags
     vnet_n: bas_vnet_names[i]
