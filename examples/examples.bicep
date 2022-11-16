@@ -146,42 +146,6 @@ module vnetSpokeN '../components/vnet/vnet.bicep' = [for i in range(0, length(vn
   ]
 }]
 
-// module spoke1vnet '../components/vnet/vnet.bicep' = {
-//   name: 'vnet-spoke-1'
-//   params: {
-//     tags: tags
-//     vnet_n: vnet_spoke_1_n
-//     vnet_addr: vnet_spoke_1_prefix
-//     subnets: [
-//       {
-//         name: 'snet-spoke-1'
-//         subnetPrefix: snet_spoke_1_prefix
-//         nsgId: nsgDefaultDeploy.outputs.id
-//       }
-//     ]
-//     defaultNsgId: nsgDefaultDeploy.outputs.id
-//     location: location
-//   }
-// }
-
-// module spoke2vnet '../components/vnet/vnet.bicep' = {
-//   name: 'vnet-spoke-2'
-//   params: {
-//     tags: tags
-//     vnet_n: vnet_spoke_2_n
-//     vnet_addr: vnet_spoke_2_prefix
-//     subnets: [
-//       {
-//         name: 'snet-spoke-2'
-//         subnetPrefix: snet_spoke_2_prefix
-//         nsgId: nsgDefaultDeploy.outputs.id
-//       }
-//     ]
-//     defaultNsgId: nsgDefaultDeploy.outputs.id
-//     location: location
-//   }
-// }
-
 // ------------------------------------------------------------------------------------------------
 // Bastion - Deploy Azure Bastion
 // ------------------------------------------------------------------------------------------------
