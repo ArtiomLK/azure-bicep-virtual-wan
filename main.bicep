@@ -28,7 +28,7 @@ param vhub_net_connections array
 // VWAN
 // ------------------------------------------------------------------------------------------------
 module vwan 'components/vwan/vwan.bicep' = {
-  name: 'vwan'
+  name: vwan_n
   params: {
     vwan_n: vwan_n
     location: vwan_location

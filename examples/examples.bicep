@@ -15,7 +15,7 @@ var tags = {
 // VWAN Configuration parameters
 // ------------------------------------------------------------------------------------------------
 param vwan_location string = resourceGroup().location
-var vwan_n = 'vwan-${tags.project_n}-${tags.env}-${vwan_location}'
+var vwan_n = 'vwan-${tags.project_n}-${tags.env}-${vwan_location}-${take(guid(subscription().id, resourceGroup().name), 4)}'
 
 var vhub_locations = ['eastus2', 'centralus', 'eastus', 'westus3']
 var vhub_names = [for l in vhub_locations: 'vwanhub-${tags.project_n}-${tags.env}-${l}-${take(guid(subscription().id, resourceGroup().name), 4)}']
