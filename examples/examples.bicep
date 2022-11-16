@@ -208,7 +208,6 @@ module bas '../components/bas/bas.bicep' = [for i in range(0, length(vhub_locati
 // ------------------------------------------------------------------------------------------------
 // VWAN Deployment
 // ------------------------------------------------------------------------------------------------
-
 module vwanDeployment '../main.bicep' = {
   name: 'vwanDeployment'
   params: {
