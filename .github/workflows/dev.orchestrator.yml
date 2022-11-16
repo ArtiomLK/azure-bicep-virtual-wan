@@ -8,7 +8,7 @@ on:
 env:
   RG_N: rg-azure-bicep-virtual-wan
   DEPLOYMENT_TEMPLATE: examples/examples.bicep
-  AZ_RES_TAGS: "{'project':'bicephub','env':'dev'}"
+  ACR_MODULE_N: vwan-demo
 
 name: DEV - Deploy Azure Resource
 jobs:
@@ -32,18 +32,12 @@ jobs:
         deploymentMode: Incremental
         template: ${{ env.DEPLOYMENT_TEMPLATE }}
         failOnStdErr: true
-        additionalArguments: --no-wait
 
-      # Log into Azure
-    - uses: azure/login@v1
+      # Deploy Resource to ACR
+    - uses: azure/docker-login@v1
       with:
-        creds: ${{ secrets.AZURE_CREDENTIALS_MARIO }}
-      # Test Azure Resource Deployment
-    - uses: azure/arm-deploy@v1
-      with:
-        scope: resourcegroup
-        resourceGroupName: rg-vwanIaC
-        deploymentMode: Incremental
-        template: ${{ env.DEPLOYMENT_TEMPLATE }}
-        failOnStdErr: true
-        additionalArguments: --no-wait
+        username: ${{ secrets.ACR_USERNAME }}
+        password: ${{ secrets.ACR_PASSWORD }}
+    - run: |
+        az bicep build --file ${{ env.DEPLOYMENT_TEMPLATE }}
+        az bicep publish --file ${{ env.DEPLOYMENT_TEMPLATE }} --target br:${{ secrets.ACR_LOGIN_SERVER }}/bicep/modules/$ACR_MODULE_N:${{ github.sha }}

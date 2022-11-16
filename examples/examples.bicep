@@ -3,44 +3,46 @@ targetScope = 'resourceGroup'
 // Deployment parameters
 // ------------------------------------------------------------------------------------------------
 // Sample tags parameters
+param project_n string= 'bicephub'
+param env string= 'dev'
+
 var tags = {
-  project: 'bicephub'
-  env: 'dev'
+  project_n: project_n
+  env: env
 }
 
 // ------------------------------------------------------------------------------------------------
 // VWAN Configuration parameters
 // ------------------------------------------------------------------------------------------------
 param vwan_location string = resourceGroup().location
-var vwan_n = 'vwan-${tags.project}-${tags.env}-${vwan_location}'
+var vwan_n = 'vwan-${tags.project_n}-${tags.env}-${vwan_location}'
 
 var vhub_locations = ['eastus2', 'centralus', 'eastus', 'westus3']
-var vhub_names = [for l in vhub_locations: 'vwanhub-${tags.project}-${tags.env}-${l}-${take(guid(subscription().id, resourceGroup().name), 4)}']
+var vhub_names = [for l in vhub_locations: 'vwanhub-${tags.project_n}-${tags.env}-${l}-${take(guid(subscription().id, resourceGroup().name), 4)}']
 // express route, vpng, site-to-site, fw
 var vhub_addr_prefixes = [for i in range(1, length(vhub_locations)): '${i*50}.0.0.0/24']    // 50.0.0.0/24, 100.0.0.0/24, 150.0.0.0/24, 200.0.0.0/24
 
 // vwan - vpng
-// var vpng_enabled = false
-var vpng_enabled = [true, true, true, true]
-var vpng_names = [for l in vhub_locations: 'vpng-${tags.project}-${tags.env}-${l}']
+param vpng_enabled array = [false, false, false, false]
+var vpng_names = [for l in vhub_locations: 'vpng-${tags.project_n}-${tags.env}-${l}']
 
 // ------------------------------------------------------------------------------------------------
 // VNETS Configuration parameters
 // ------------------------------------------------------------------------------------------------
 // custom-hub
-var vnet_nva_hub_names = [for l in vhub_locations: 'vnet-nva-hub-${tags.project}-${tags.env}-${l}']
+var vnet_nva_hub_names = [for l in vhub_locations: 'vnet-nva-hub-${tags.project_n}-${tags.env}-${l}']
 var snet_nva_hub_names = [for l in vhub_locations: 'snet-nva-hub-${l}']
 var vnet_nva_hub_prefixes = [for i in range(1, length(vhub_locations)): '${i*50}.0.1.0/24']       // 50.0.1.0/24, 100.0.1.0/24, 150.0.1.0/24, 200.0.1.0/24
 var snet_nva_hub_prefixes = [for i in range(1, length(vhub_locations)): '${i*50}.0.1.128/25']     // 50.0.1.128/25, 100.0.1.128/25, 150.0.1.128/25, 200.0.1.128/25
 
 // vnet-spoke-1
-var vnet_spoke_1_names = [for l in vhub_locations: 'vnet-spoke-1-${tags.project}-${tags.env}-${l}']
+var vnet_spoke_1_names = [for l in vhub_locations: 'vnet-spoke-1-${tags.project_n}-${tags.env}-${l}']
 var snet_spoke_1_names = [for l in vhub_locations: 'snet-spoke-1-${l}']
 var vnet_spoke_1_prefixes = [for i in range(1, length(vhub_locations)): '${i*50}.0.10.0/24']       // 50.0.10.0/24, 100.0.10.0/24, 150.0.10.0/24, 200.0.10.0/24
 var snet_spoke_1_prefixes = [for i in range(1, length(vhub_locations)): '${i*50}.0.10.128/25']     // 50.0.10.128/25, 100.0.10.128/25, 150.0.10.128/25, 200.0.10.128/25
 
 // vnet-spoke-n
-var vnet_spoke_n_names = [for l in vhub_locations: 'vnet-spoke-n-${tags.project}-${tags.env}-${l}']
+var vnet_spoke_n_names = [for l in vhub_locations: 'vnet-spoke-n-${tags.project_n}-${tags.env}-${l}']
 var snet_spoke_n_names = [for l in vhub_locations: 'snet-spoke-n-${l}']
 var vnet_spoke_n_prefixes = [for i in range(1, length(vhub_locations)): '${i*50}.0.11.0/24']       // 50.0.11.0/24, 100.0.11.0/24, 150.0.11.0/24, 200.0.11.0/24
 var snet_spoke_n_prefixes = [for i in range(1, length(vhub_locations)): '${i*50}.0.11.128/25']     // 50.0.11.128/25, 100.0.11.128/25, 150.0.11.128/25, 200.0.11.128/25
@@ -55,10 +57,10 @@ var vhub_net_connections = concat(vhub_net_connections_nva_hub, vhub_net_connect
 // ------------------------------------------------------------------------------------------------
 // Bastion Configuration parameters
 // ------------------------------------------------------------------------------------------------
-var bas_enabled = [true, true, true, true]
-var bas_names = [for l in vhub_locations: 'bas-${tags.project}-${tags.env}-${l}']
-var bas_pip_names = [for l in vhub_locations: 'bas-pip-${tags.project}-${tags.env}-${l}']
-var bas_vnet_names = [for l in vhub_locations: 'vnet-bas-${tags.project}-${tags.env}-${l}']
+param bas_enabled array = [false, false, false, false]
+var bas_names = [for l in vhub_locations: 'bas-${tags.project_n}-${tags.env}-${l}']
+var bas_pip_names = [for l in vhub_locations: 'bas-pip-${tags.project_n}-${tags.env}-${l}']
+var bas_vnet_names = [for l in vhub_locations: 'vnet-bas-${tags.project_n}-${tags.env}-${l}']
 var bas_vnet_prefixes = [for i in range(1, length(vhub_locations)): '${i*50}.0.2.0/24']
 var bas_snet_prefixes = [for i in range(1, length(vhub_locations)): '${i*50}.0.2.0/26']
 
