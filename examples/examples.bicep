@@ -15,7 +15,7 @@ param vwan_location string = resourceGroup().location
 var vwan_n = 'vwan-${tags.project}-${tags.env}-${vwan_location}'
 
 var vhub_locations = ['eastus2', 'centralus', 'eastus', 'westus3']
-var vhub_names = [for l in vhub_locations: 'vwanhub-${tags.project}-${tags.env}-${l}']
+var vhub_names = [for l in vhub_locations: 'vwanhub-${tags.project}-${tags.env}-${l}-${take(guid(subscription().id, resourceGroup().name), 4)}']
 // express route, vpng, site-to-site, fw
 var vhub_addr_prefixes = [for i in range(1, length(vhub_locations)): '${i*50}.0.0.0/24']    // 50.0.0.0/24, 100.0.0.0/24, 150.0.0.0/24, 200.0.0.0/24
 
