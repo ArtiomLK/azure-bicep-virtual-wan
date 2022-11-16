@@ -8,13 +8,11 @@ var tags = {
   env: 'dev'
 }
 
-param location string = 'eastus2'
-
 // ------------------------------------------------------------------------------------------------
 // VWAN Configuration parameters
 // ------------------------------------------------------------------------------------------------
-var vwan_n = 'vwan-${tags.project}-${tags.env}-${location}'
-param vwan_location string = location
+param vwan_location string = resourceGroup().location
+var vwan_n = 'vwan-${tags.project}-${tags.env}-${vwan_location}'
 
 var vhub_locations = ['eastus2', 'centralus', 'eastus', 'westus3']
 var vhub_names = [for l in vhub_locations: 'vwanhub-${tags.project}-${tags.env}-${l}']
@@ -65,6 +63,7 @@ var bas_vnet_prefixes = [for i in range(1, length(vhub_locations)): '${i*50}.0.2
 var bas_snet_prefixes = [for i in range(1, length(vhub_locations)): '${i*50}.0.2.0/26']
 
 var snet_bas_ids = [for bas_vnet_n in bas_vnet_names: '${subscription().id}/resourceGroups/${ resourceGroup().name}/providers/Microsoft.Network/virtualNetworks/${bas_vnet_n}/subnets/AzureBastionSubnet']
+
 
 // ------------------------------------------------------------------------------------------------
 // VNET - Deploy Custom Hub Vnet for third party NVA
@@ -146,6 +145,7 @@ module vnetSpokeN '../components/vnet/vnet.bicep' = [for i in range(0, length(vn
   ]
 }]
 
+
 // ------------------------------------------------------------------------------------------------
 // Bastion - Deploy Azure Bastion
 // ------------------------------------------------------------------------------------------------
@@ -202,15 +202,14 @@ module bas '../components/bas/bas.bicep' = [for i in range(0, length(vhub_locati
   ]
 }]
 
+
 // ------------------------------------------------------------------------------------------------
-// VWAN Deployment Examples
+// VWAN Deployment
 // ------------------------------------------------------------------------------------------------
 
 module vwanDeployment '../main.bicep' = {
   name: 'vwanDeployment'
   params: {
-    location: location
-
     vwan_n: vwan_n
     vwan_location: vwan_location
 
