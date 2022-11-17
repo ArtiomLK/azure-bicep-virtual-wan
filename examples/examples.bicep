@@ -23,7 +23,7 @@ var vhub_names = [for l in vhub_locations: 'vwanhub-${tags.project_n}-${tags.env
 var vhub_addr_prefixes = [for i in range(1, length(vhub_locations)): '${i*50}.0.0.0/24']    // 50.0.0.0/24, 100.0.0.0/24, 150.0.0.0/24, 200.0.0.0/24
 
 // vwan - vpng
-param vpng_enabled array = [false, false, false, false]
+param vpng_enabled array = [true, false, false, true]
 var vpng_names = [for l in vhub_locations: 'vpng-${tags.project_n}-${tags.env}-${l}']
 
 // ------------------------------------------------------------------------------------------------
@@ -57,7 +57,7 @@ var vhub_net_connections = concat(vhub_net_connections_nva_hub, vhub_net_connect
 // ------------------------------------------------------------------------------------------------
 // Bastion Configuration parameters
 // ------------------------------------------------------------------------------------------------
-param bas_enabled array = [false, false, false, false]
+param bas_enabled array = [false, true, false, true]
 var bas_names = [for l in vhub_locations: 'bas-${tags.project_n}-${tags.env}-${l}']
 var bas_pip_names = [for l in vhub_locations: 'bas-pip-${tags.project_n}-${tags.env}-${l}']
 var bas_vnet_names = [for l in vhub_locations: 'vnet-bas-${tags.project_n}-${tags.env}-${l}']
