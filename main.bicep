@@ -66,7 +66,7 @@ module vpng 'components/vwan/vpng.bicep' = [for i in range(0, length(vhub_locati
 // ------------------------------------------------------------------------------------------------
 // VWAN VNET PEERINGS
 // ------------------------------------------------------------------------------------------------
-resource vhubNetConnections 'Microsoft.Network/virtualHubs/hubVirtualNetworkConnections@2020-05-01' = [for i in range(0, length(vhub_net_connections)) : {
+resource vhubNetConnections 'Microsoft.Network/virtualHubs/hubVirtualNetworkConnections@2020-05-01' = [for i in range(0, length(vhub_net_connections)) : if(!empty(vhub_net_connections[i][1])) {
   parent: vhub[vhub_net_connections[i][0]]
   name: '${vhub_names[vhub_net_connections[i][0]]}-to-${vhub_net_connections[i][2]}'
   properties: {

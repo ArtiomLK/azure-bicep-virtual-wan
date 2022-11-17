@@ -52,8 +52,9 @@ var snet_spoke_n_prefixes = [for i in range(1, length(vhub_locations)): '${i*50}
 var vhub_net_connections_nva_hub = [for i in range(0, length(vhub_locations)): [i, '${subscription().id}/resourceGroups/${resourceGroup().name}/providers/Microsoft.Network/virtualNetworks/${vnet_nva_hub_names[i]}', vnet_nva_hub_names[i] ]]
 var vhub_net_connections_spoke_1 = [for i in range(0, length(vhub_locations)): [i, '${subscription().id}/resourceGroups/${resourceGroup().name}/providers/Microsoft.Network/virtualNetworks/${vnet_spoke_1_names[i]}', vnet_spoke_1_names[i] ]]
 var vhub_net_connections_spoke_n = [for i in range(0, length(vhub_locations)): [i, '${subscription().id}/resourceGroups/${resourceGroup().name}/providers/Microsoft.Network/virtualNetworks/${vnet_spoke_n_names[i]}', vnet_spoke_n_names[i] ]]
+var vhub_net_connections_bas = [for i in range(0, length(vhub_locations)):  [i, bas_enabled[i] ? '${subscription().id}/resourceGroups/${resourceGroup().name}/providers/Microsoft.Network/virtualNetworks/${bas_vnet_names[i]}' : '', bas_vnet_names[i] ]]
 
-var vhub_net_connections = concat(vhub_net_connections_nva_hub, vhub_net_connections_spoke_1, vhub_net_connections_spoke_n)
+var vhub_net_connections = concat(vhub_net_connections_nva_hub, vhub_net_connections_spoke_1, vhub_net_connections_spoke_n, vhub_net_connections_bas)
 
 // ------------------------------------------------------------------------------------------------
 // Bastion Configuration parameters
