@@ -1,0 +1,43 @@
+on:
+  workflow_dispatch: {}
+  push:
+    paths:
+      - '**'
+      - '!**.md'
+
+env:
+  RG_N: rg-azure-bicep-virtual-wan
+  DEPLOYMENT_TEMPLATE: examples/examples.bicep
+  ACR_MODULE_N: vwan-demo
+
+name: DEV - Deploy Azure Resource
+jobs:
+  deploy_to_dev:
+    runs-on: ubuntu-latest
+    environment: dev
+    steps:
+      # Checkout code
+    - uses: actions/checkout@v2
+
+      # Log into Azure
+    - uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      # Test Azure Resource Deployment
+    - uses: azure/arm-deploy@v1
+      with:
+        scope: resourcegroup
+        resourceGroupName: ${{ env.RG_N }}
+        deploymentMode: Incremental
+        template: ${{ env.DEPLOYMENT_TEMPLATE }}
+        failOnStdErr: true
+
+      # Deploy Resource to ACR
+    - uses: azure/docker-login@v1
+      with:
+        username: ${{ secrets.ACR_USERNAME }}
+        password: ${{ secrets.ACR_PASSWORD }}
+    - run: |
+        az bicep build --file ${{ env.DEPLOYMENT_TEMPLATE }}
+        az bicep publish --file ${{ env.DEPLOYMENT_TEMPLATE }} --target br:${{ secrets.ACR_LOGIN_SERVER }}/bicep/modules/$ACR_MODULE_N:${{ github.sha }}
